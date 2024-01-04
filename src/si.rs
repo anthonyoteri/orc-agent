@@ -1,4 +1,4 @@
-use crate::State;
+use crate::metrics::State;
 use std::collections::BTreeMap;
 use std::time::SystemTime;
 use sysinfo::System;
@@ -63,18 +63,18 @@ impl From<&State> for SelectionInput {
                 .unwrap()
                 .as_secs(),
 
-            total_memory: state.system.total_memory(),
-            used_memory: state.system.used_memory(),
-            total_swap: state.system.total_swap(),
-            used_swap: state.system.used_swap(),
+            total_memory: state.system().total_memory(),
+            used_memory: state.system().used_memory(),
+            total_swap: state.system().total_swap(),
+            used_swap: state.system().used_swap(),
 
-            num_cpus: state.system.cpus().len(),
+            num_cpus: state.system().cpus().len(),
 
-            cpu_usage: state.system.global_cpu_info().cpu_usage(),
+            cpu_usage: state.system().global_cpu_info().cpu_usage(),
             load_average: vec![load_average.one, load_average.five, load_average.fifteen],
 
             network: state
-                .networks
+                .networks()
                 .into_iter()
                 .map(|(name, network)| {
                     (
@@ -91,7 +91,7 @@ impl From<&State> for SelectionInput {
                 .collect(),
 
             volumes: state
-                .disks
+                .disks()
                 .into_iter()
                 .map(|disk| {
                     (

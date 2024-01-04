@@ -1,10 +1,13 @@
-use orc_agent::collect_data;
-use orc_agent::init;
+use orc_agent::metrics::collect_data;
+use orc_agent::metrics::init;
 
 use std::sync::Arc;
 use std::sync::Mutex;
 
+#[tracing::instrument]
 fn main() {
+    tracing_subscriber::fmt::init();
+
     let state = Arc::new(Mutex::new(init()));
     loop {
         std::thread::sleep(std::time::Duration::from_secs(3));
