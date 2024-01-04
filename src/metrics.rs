@@ -4,13 +4,13 @@ use std::sync::Mutex;
 use sysinfo::{Disks, Networks, System};
 
 #[derive(Debug)]
-pub struct State {
+pub struct HostMetrics {
     system: System,
     networks: Networks,
     disks: Disks,
 }
 
-impl State {
+impl HostMetrics {
     #[tracing::instrument]
     pub fn new() -> Self {
         let mut system = System::new_all();
@@ -38,7 +38,7 @@ impl State {
 }
 
 #[tracing::instrument(skip(state))]
-fn refresh_all(state: &Mutex<State>) {
+fn refresh_all(state: &Mutex<HostMetrics>) {
     tracing::debug!("Refreshing hardware metrics");
     let mut state = state.lock().unwrap();
     state.system.refresh_all();
@@ -47,13 +47,13 @@ fn refresh_all(state: &Mutex<State>) {
 }
 
 #[tracing::instrument]
-pub fn init() -> State {
+pub fn init() -> HostMetrics {
     sysinfo::set_open_files_limit(0);
-    State::new()
+    HostMetrics::new()
 }
 
 #[tracing::instrument(skip(state))]
-pub fn collect_data(state: Arc<Mutex<State>>) -> SelectionInput {
+pub fn collect_data(state: Arc<Mutex<HostMetrics>>) -> SelectionInput {
     refresh_all(&state);
     SelectionInput::from(&*state.lock().unwrap())
 }

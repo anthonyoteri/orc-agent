@@ -1,4 +1,4 @@
-use crate::metrics::State;
+use crate::metrics::HostMetrics;
 use std::collections::BTreeMap;
 use std::time::SystemTime;
 use sysinfo::System;
@@ -47,8 +47,8 @@ pub struct DiskInfo<'a> {
     pub used: u64,
 }
 
-impl From<&State> for SelectionInput {
-    fn from(state: &State) -> Self {
+impl From<&HostMetrics> for SelectionInput {
+    fn from(state: &HostMetrics) -> Self {
         let load_average = System::load_average();
 
         Self {
