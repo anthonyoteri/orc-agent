@@ -4,9 +4,15 @@ use orc_agent::metrics::init;
 use std::sync::Arc;
 use std::sync::Mutex;
 
+use clap::Parser;
+
+#[derive(Debug, Parser)]
+struct Args {}
+
 #[tracing::instrument]
 fn main() {
     tracing_subscriber::fmt::init();
+    let args = Args::parse();
 
     let state = Arc::new(Mutex::new(init()));
     loop {
